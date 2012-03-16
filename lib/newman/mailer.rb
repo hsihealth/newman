@@ -32,8 +32,17 @@ module Newman
     # please [file an issue](https://github.com/mendicant-university/newman/issues).
 
     def initialize(settings)
-      imap = settings.imap
       smtp = settings.smtp
+
+      self.use_pop3 = (settings.use_pop3.nil? || settings.pop3.nil?) ? false : settings.use_pop3
+      mbox = self.use_pop3 ? settings.pop3 : settings.imap
+      self.retriever_settings = {
+         :address    => mbox.address,
+         :user_name  => mbox.user,
+         :password   => mbox.password,
+         :enable_ssl => mbox.ssl_enabled || false,
+         :port       => mbox.port
+      }
 
       self.retriever_settings = {
          :address    => imap.address,
@@ -61,7 +70,11 @@ module Newman
     # an empty array otherwise.
 
     def messages
-      Mail::IMAP.new(retriever_settings).all(:delete_after_find => true)
+      if self.use_pop3 
+        Mail::POP3.new(retriever_settings).all(:delete_after_find => true) 
+      else
+        Mail::IMAP.new(retriever_settings).all(:delete_after_find => true)
+      end      
     end
 
     # ---
@@ -102,6 +115,6 @@ module Newman
     # `Newman::Mailer` objects are meant to be treated as immutable constructs
     # once they are created.
 
-    attr_accessor :retriever_settings, :delivery_settings
+    attr_accessor :retriever_settings, :delivery_settings, :use_pop3
   end
 end
