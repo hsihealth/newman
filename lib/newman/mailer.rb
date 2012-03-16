@@ -44,14 +44,6 @@ module Newman
          :port       => mbox.port
       }
 
-      self.retriever_settings = {
-         :address    => imap.address,
-         :user_name  => imap.user,
-         :password   => imap.password,
-         :enable_ssl => imap.ssl_enabled || false,
-         :port       => imap.port
-      }
-      
       self.delivery_settings = {
          :address              => smtp.address,
          :user_name            => smtp.user,
@@ -102,6 +94,7 @@ module Newman
       new_message(*a, &b).deliver
     end
 
+    attr_accessor :use_pop3
     # ---
 
     # **NOTE: Methods below this point in the file are implementation 
@@ -115,6 +108,6 @@ module Newman
     # `Newman::Mailer` objects are meant to be treated as immutable constructs
     # once they are created.
 
-    attr_accessor :retriever_settings, :delivery_settings, :use_pop3
+    attr_accessor :retriever_settings, :delivery_settings
   end
 end
