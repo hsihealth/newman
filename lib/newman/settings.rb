@@ -86,8 +86,6 @@ module Newman
 
     def initialize
       self.imap        = OpenStruct.new
-      self.pop3        = OpenStruct.new
-      self.use_pop3    = false
       self.smtp        = OpenStruct.new
       self.service     = OpenStruct.new
       self.application = OpenStruct.new
@@ -100,7 +98,7 @@ module Newman
     # `Newman::Server`), and the `application` field is reserved for
     # application-specific configurations.
 
-    attr_accessor :imap, :pop3, :smtp, :service, :application, :use_pop3
+    attr_accessor :imap, :smtp, :service, :application
 
 
     # ---

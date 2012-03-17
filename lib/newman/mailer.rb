@@ -33,15 +33,14 @@ module Newman
 
     def initialize(settings)
       smtp = settings.smtp
+      imap = settings.imap
 
-      self.use_pop3 = (settings.use_pop3.nil? || settings.pop3.nil?) ? false : settings.use_pop3
-      mbox = self.use_pop3 ? settings.pop3 : settings.imap
       self.retriever_settings = {
-         :address    => mbox.address,
-         :user_name  => mbox.user,
-         :password   => mbox.password,
-         :enable_ssl => mbox.ssl_enabled || false,
-         :port       => mbox.port
+         :address    => imap.address,
+         :user_name  => imap.user,
+         :password   => imap.password,
+         :enable_ssl => imap.ssl_enabled || false,
+         :port       => imap.port
       }
 
       self.delivery_settings = {
@@ -62,11 +61,7 @@ module Newman
     # an empty array otherwise.
 
     def messages
-      if self.use_pop3 
-        Mail::POP3.new(retriever_settings).all(:delete_after_find => true) 
-      else
-        Mail::IMAP.new(retriever_settings).all(:delete_after_find => true)
-      end      
+      Mail::IMAP.new(retriever_settings).all(:delete_after_find => true)
     end
 
     # ---
@@ -94,7 +89,6 @@ module Newman
       new_message(*a, &b).deliver
     end
 
-    attr_accessor :use_pop3
     # ---
 
     # **NOTE: Methods below this point in the file are implementation 
